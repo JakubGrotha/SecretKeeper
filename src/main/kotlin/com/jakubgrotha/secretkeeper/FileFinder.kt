@@ -4,7 +4,7 @@ import com.jakubgrotha.secretkeeper.exception.NoSrcDirectoryFoundException
 import org.gradle.api.Project
 import java.io.File
 
-class PropertiesFileFinder {
+class FileFinder {
 
     private val supportedFileExtensions = listOf("properties", "yaml", "yml")
 
