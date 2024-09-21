@@ -9,6 +9,9 @@ class YamlPropertyExtractor : PropertyExtractor {
 
     @Suppress("UNCHECKED_CAST")
     override fun extract(file: File): Map<String, String> {
+        if (file.readText().isEmpty()) {
+            return emptyMap()
+        }
         val yaml = objectMapper.readValue(file, Map::class.java) as Map<String, Any>
         return flattenYaml(yaml)
     }
@@ -20,7 +23,7 @@ class YamlPropertyExtractor : PropertyExtractor {
             if (value is Map<*, *>) {
                 flatMap.putAll(flattenYaml(value as Map<String, Any>, "$prefix$key."))
             } else {
-                flatMap["$prefix$key"] = value as String
+                flatMap["$prefix$key"] = value as String? ?: ""
             }
         }
         return flatMap

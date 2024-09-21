@@ -1,0 +1,6 @@
+first: test
+
+second.property: test
+third:
+  nested.property: test
+  secret: test
