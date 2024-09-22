@@ -1,19 +1,18 @@
 package com.jakubgrotha.secretkeeper
 
-import com.jakubgrotha.secretkeeper.exception.UnsupportedExtensionException
-import com.jakubgrotha.secretkeeper.extactor.PropertiesPropertyExtractor
-import com.jakubgrotha.secretkeeper.extactor.PropertyExtractor
-import com.jakubgrotha.secretkeeper.extactor.YamlPropertyExtractor
+import com.jakubgrotha.secretkeeper.analyzer.PropertyAnalyzer
+import com.jakubgrotha.secretkeeper.analyzer.PropertyAnalyzer.AnalysisResult.Failure
+import com.jakubgrotha.secretkeeper.exception.SecretValueIsNotMaskedException
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
+import org.gradle.kotlin.dsl.internal.sharedruntime.support.appendReproducibleNewLine
+import java.io.File
 
 abstract class SecretKeeperTask : DefaultTask() {
 
-    private val propertyAnalyzer = PropertyAnalyzer()
     private val fileFinder = FileFinder()
-    private val yamlPropertyExtractor = YamlPropertyExtractor()
-    private val propertiesPropertyExtractor = PropertiesPropertyExtractor()
+    private val propertyAnalyzer = PropertyAnalyzer()
 
     @Input
     var fields: List<String> = listOf()
@@ -24,18 +23,20 @@ abstract class SecretKeeperTask : DefaultTask() {
     @TaskAction
     fun keepSecrets() {
         val files = fileFinder.findFiles(project)
-        files.forEach { file ->
-            val propertyExtractor: PropertyExtractor = findPropertyExtractor(file.extension)
-            val properties = propertyExtractor.extract(file)
-            propertyAnalyzer.analyze(properties, fields, expectedSecretValue)
+        val result = propertyAnalyzer.analyze(files, fields, expectedSecretValue)
+        if (result is Failure) {
+            val message = composeMessage(result.violations)
+            throw SecretValueIsNotMaskedException(message)
         }
     }
 
-    private fun findPropertyExtractor(fileExtension: String): PropertyExtractor {
-        return when (fileExtension) {
-            "yaml", "yml" -> yamlPropertyExtractor
-            "properties" -> propertiesPropertyExtractor
-            else -> throw UnsupportedExtensionException(fileExtension)
+    private fun composeMessage(violations: Map<File, List<String>>): String {
+        val rootDirectory = project.rootDir
+        val stringBuilder = StringBuilder("Secret values that are not masked:")
+        violations.map { (file, violations) ->
+            stringBuilder.appendReproducibleNewLine()
+            stringBuilder.append("File: ${file.relativeTo(rootDirectory)}, fields: $violations")
         }
+        return stringBuilder.toString()
     }
 }

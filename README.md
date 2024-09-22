@@ -41,4 +41,3 @@ secretKeeper {
 
 * Add unit, integration and functional tests
 * Allow users to choose if blank secret values are acceptable and add support for it
-* Refactor Property Analyzer to give information about all violations in all files - currently only stops at 1

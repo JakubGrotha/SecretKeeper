@@ -15,6 +15,8 @@ repositories {
 dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
+    testImplementation("org.mockito:mockito-core:5.13.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     testImplementation("com.willowtreeapps.assertk:assertk:0.28.1")
     testImplementation(kotlin("test"))
 }
