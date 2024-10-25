@@ -15,13 +15,12 @@ class PropertyAnalyzer(
 ) {
 
     fun analyze(files: List<File>, fields: List<String>, expectedSecretValue: String): AnalysisResult {
-        val violations = files
-            .associate { file ->
-                val propertyExtractor: PropertyExtractor = findPropertyExtractor(file.extension)
-                val properties = propertyExtractor.extract(file)
-                val unmaskedFields = singleFilePropertyAnalyzer.analyze(properties, fields, expectedSecretValue)
-                file to unmaskedFields
-            }
+        val violations = files.associateWith { file ->
+            val propertyExtractor: PropertyExtractor = findPropertyExtractor(file.extension)
+            val properties = propertyExtractor.extract(file)
+            val unmaskedFields = singleFilePropertyAnalyzer.analyze(properties, fields, expectedSecretValue)
+            unmaskedFields
+        }
             .filter { it.value.isNotEmpty() }
 
         return if (violations.isEmpty()) Success else Failure(violations)
@@ -37,6 +36,6 @@ class PropertyAnalyzer(
 
     sealed interface AnalysisResult {
         object Success : AnalysisResult
-        class Failure(val violations: Map<File, List<String>>) : AnalysisResult
+        data class Failure(val violations: Map<File, List<String>>) : AnalysisResult
     }
 }
