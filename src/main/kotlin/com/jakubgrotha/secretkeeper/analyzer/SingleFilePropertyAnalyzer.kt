@@ -2,11 +2,12 @@ package com.jakubgrotha.secretkeeper.analyzer
 
 class SingleFilePropertyAnalyzer {
 
-    fun analyze(properties: Map<*, *>, fields: List<String>, expectedSecretValue: String): List<String> {
+    fun analyze(properties: Map<String, String>, fields: List<String>, expectedSecretValue: String): List<String> {
         return properties
             .filterKeys { key -> fields.contains(key) }
+            .filterValues { value -> value.isNotEmpty() }
             .filterValues { value -> expectedSecretValue != value }
-            .map { it.key as String }
+            .map { it.key }
             .toList()
     }
 }

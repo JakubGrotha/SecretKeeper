@@ -10,7 +10,7 @@ Secret keeper currently supports file extensions commonly used in Spring Boot pr
 * `.yaml`
 * `.yml`
 
-**Please note: This plugin is not yet published, all the to do tasks must be accomplished before it happens.**
+**Please note: This plugin is not yet published**
 
 ### How to use
 
@@ -37,6 +37,32 @@ secretKeeper {
 }
 ```
 
-### To do:
+### Examples:
 
-* Allow users to choose if blank secret values are acceptable and add support for it
+Given this plugin configuration:
+```kotlin
+secretKeeper {
+    secrets = listOf("my.secret.property", "empty.secret.property")
+}
+```
+
+And this application.properties file:
+```yaml
+my.secret.property=123
+other.secret.property=SECRET
+empty.secret.property=
+```
+
+The validation will fail, because the `my.secret.property` does not equal to `SECRET`.
+
+However, for this application.properties file:
+```yaml
+my.secret.property=SECRET
+other.secret.property=123
+empty.secret.property=
+```
+
+The validation will pass, because:
+* `my.secret.property` is masked
+* `other.secret.property` is not specified in the configuration
+* `empty.secret.property` is empty so it does not leak any secrets
