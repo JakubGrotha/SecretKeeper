@@ -7,9 +7,8 @@ class PropertiesPropertyExtractor : PropertyExtractor {
         return file.readLines()
             .filter { it.contains("=") }
             .associate {
-                val arr = it.split("=")
-                arr[0] to arr[1]
+                val keyToValue = it.split("=")
+                keyToValue[0] to keyToValue[1]
             }
     }
-
 }

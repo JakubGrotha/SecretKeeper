@@ -25,18 +25,19 @@ abstract class SecretKeeperTask : DefaultTask() {
         val files = fileFinder.findFiles(project)
         val result = propertyAnalyzer.analyze(files, fields, expectedSecretValue)
         if (result is Failure) {
-            val message = composeMessage(result.violations)
+            val message = composeMessage(result.filesWithViolations)
             throw SecretValueIsNotMaskedException(message)
         }
     }
 
-    private fun composeMessage(violations: Map<File, List<String>>): String {
+    private fun composeMessage(filesWithViolations: Map<File, List<String>>): String {
         val rootDirectory = project.rootDir
-        val stringBuilder = StringBuilder("Secret values that are not masked:")
-        violations.map { (file, violations) ->
-            stringBuilder.appendReproducibleNewLine()
-            stringBuilder.append("File: ${file.relativeTo(rootDirectory)}, fields: $violations")
+        return buildString {
+            append("Secret values that are not masked:")
+            filesWithViolations.forEach { (file, violations) ->
+                appendReproducibleNewLine()
+                append("File: ${file.relativeTo(rootDirectory)}, fields: $violations")
+            }
         }
-        return stringBuilder.toString()
     }
 }

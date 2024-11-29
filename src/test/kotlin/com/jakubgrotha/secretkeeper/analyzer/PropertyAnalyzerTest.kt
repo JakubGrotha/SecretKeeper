@@ -96,10 +96,10 @@ class PropertyAnalyzerTest {
 
         // then
         assertThat(result).isInstanceOf(PropertyAnalyzer.AnalysisResult.Failure::class)
-        val violations = (result as PropertyAnalyzer.AnalysisResult.Failure).violations
-        assertThat(violations.size).isEqualTo(1)
-        assertThat(violations.keys.first().name).isEqualTo("other-example.yaml")
-        assertThat(violations.values.first()).isEqualTo(listOf(SECOND_FIELD))
+        val filesWithViolations = (result as PropertyAnalyzer.AnalysisResult.Failure).filesWithViolations
+        assertThat(filesWithViolations.size).isEqualTo(1)
+        assertThat(filesWithViolations.keys.first().name).isEqualTo("other-example.yaml")
+        assertThat(filesWithViolations.values.first()).isEqualTo(listOf(SECOND_FIELD))
     }
 
     @Test
@@ -118,10 +118,10 @@ class PropertyAnalyzerTest {
 
         // then
         assertThat(result).isInstanceOf(PropertyAnalyzer.AnalysisResult.Failure::class)
-        val violations = (result as PropertyAnalyzer.AnalysisResult.Failure).violations
-        assertThat(violations.size).isEqualTo(1)
-        assertThat(violations.keys.first().name).isEqualTo("other-example.properties")
-        assertThat(violations.values.first()).isEqualTo(listOf(SECOND_FIELD))
+        val filesWithViolations = (result as PropertyAnalyzer.AnalysisResult.Failure).filesWithViolations
+        assertThat(filesWithViolations.size).isEqualTo(1)
+        assertThat(filesWithViolations.keys.first().name).isEqualTo("other-example.properties")
+        assertThat(filesWithViolations.values.first()).isEqualTo(listOf(SECOND_FIELD))
     }
 
     companion object {
