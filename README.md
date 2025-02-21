@@ -10,15 +10,13 @@ Secret keeper currently supports file extensions commonly used in Spring Boot pr
 * `.yaml`
 * `.yml`
 
-**Please note: This plugin is not yet published**
-
 ### How to use
 
 Add the plugin to your `build.gradle.kts` file:
 
 ```kotlin
 plugins {
-    id("com.jakubgrotha.secret-keeper") version "1.0"
+    id("io.github.JakubGrotha.secret-keeper") version "0.1"
 }
 ```
 

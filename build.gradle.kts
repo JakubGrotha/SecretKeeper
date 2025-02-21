@@ -3,10 +3,11 @@ plugins {
     `maven-publish`
     `java-gradle-plugin`
     kotlin("jvm") version "1.9.20"
+    id("com.gradle.plugin-publish") version "1.2.1"
 }
 
-group = "com.jakubgrotha"
-version = "1.0-SNAPSHOT"
+group = "io.github.jakubgrotha"
+version = "0.1"
 
 repositories {
     mavenCentral()
@@ -33,10 +34,15 @@ sourceSets {
 
 gradlePlugin {
     testSourceSets(sourceSets["integrationTest"])
+    website = "https://github.com/JakubGrotha/SecretKeeper"
+    vcsUrl = "https://github.com/JakubGrotha/SecretKeeper"
     plugins {
         create("secretKeeper") {
-            id = "com.jakubgrotha.secret-keeper"
-            implementationClass = "com.jakubgrotha.secretkeeper.SecretKeeperPlugin"
+            id = "io.github.JakubGrotha.secret-keeper"
+            displayName = "secret-keeper-plugin"
+            description = "A plugin that checks if your sensitive fields (secrets) are masked"
+            tags = listOf("secret", "secrets", "masking")
+            implementationClass = "io.github.jakubgrotha.secretkeeper.SecretKeeperPlugin"
         }
     }
 }
